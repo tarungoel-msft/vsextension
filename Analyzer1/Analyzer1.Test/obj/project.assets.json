@@ -9810,8 +9810,7 @@
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "D:\\git\\Azure-EV2Compiler\\src\\Ev2.M365\\bin\\Debug": {},
         "https://api.nuget.org/v3/index.json": {},
-        "https://msazure.pkgs.visualstudio.com/_packaging/ACE/nuget/v3/index.json": {},
-        "https://msazure.pkgs.visualstudio.com/_packaging/topologygenerator-feed/nuget/v3/index.json": {}
+        "https://msazure.pkgs.visualstudio.com/_packaging/ACE/nuget/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp3.1": {

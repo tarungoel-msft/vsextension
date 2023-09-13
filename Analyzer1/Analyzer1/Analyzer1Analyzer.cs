@@ -13,7 +13,9 @@ namespace Analyzer1
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class Analyzer1Analyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "Duplicate function";
+        public const string DiagnosticId = "Analyzer1";
+
+        private static Dictionary<string, object> Lookup = new Dictionary<string, object>();
 
         // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
         // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Localizing%20Analyzers.md for more on localization
@@ -33,30 +35,23 @@ namespace Analyzer1
 
             // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
             // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-            context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.Method);
             context.RegisterCodeBlockAction(AnalyzeCodeBlock);
         }
 
         private static void AnalyzeCodeBlock(CodeBlockAnalysisContext context)
         {
             var methodSymbol = context.OwningSymbol as IMethodSymbol;
-            var methodBody = context.CodeBlock;
-            var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name);
-            context.ReportDiagnostic(diagnostic);
-        }
+            object toFullString = context.CodeBlock.ToFullString();
 
-        private static void AnalyzeSymbol(SymbolAnalysisContext context)
-        {
-            // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
-            var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
-
-            // Find just those named type symbols with names containing lowercase letters.
-            if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
+            var methodBody = toFullString;
+            if (Lookup.ContainsKey(methodSymbol.Name))
             {
-                // For all such symbols, produce a diagnostic.
-                var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
-
+                var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodBody);
                 context.ReportDiagnostic(diagnostic);
+            }
+            else
+            {
+                Lookup.Add(methodSymbol.Name, methodBody);
             }
         }
     }
